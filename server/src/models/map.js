@@ -422,6 +422,15 @@ module.exports = {
 				transaction: t
 			}).then(mapToUpdate => {
 				if (mapToUpdate) {
+					if (map.name) {
+						return verifyMapNameNotTaken(map.name).then(() => {
+							return mapToUpdate.update(map, {
+								transaction: t
+							}).then(() => {
+								return Promise.resolve();
+							});
+						});
+					}
 					const previousMapStatus = mapToUpdate.statusFlag;
 					return mapToUpdate.update(map, {
 						transaction: t
