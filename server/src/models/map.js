@@ -486,7 +486,7 @@ module.exports = {
 	updateInfo: (mapID, mapInfo) => {
 		return MapInfo.update(
 			{
-				youtubeID: mapInfo.youtubeID ?? null,
+				youtubeID: mapInfo.youtubeID || null,
 				description: mapInfo.description
 			},
 			{
