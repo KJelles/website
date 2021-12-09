@@ -556,6 +556,31 @@ module.exports = {
 		});
 	},
 
+	checkPermissions: (mapID, reqUser) => {
+		return new Promise((resolve, reject) => {
+			Map.findByPk(mapID, {
+				raw: true,
+			}).then(mapObj => {
+				if (mapObj) {
+					if (mapObj.statusFlag === STATUS.APPROVED) {
+						if (reqUser.roles === user.Role.ADMIN)
+							resolve();
+						else
+							reject(new ServerError(403, 'Forbidden'));
+					} else {
+						if (reqUser.roles === user.Role.ADMIN || reqUser.roles === user.Role.MODERATOR) {
+							resolve();
+						} else {
+							resolve("Verify");
+						}
+					}
+				} else {
+					reject(new ServerError(404, 'Map not found'));
+				}
+			});
+		});
+	},
+
 	upload: (mapID, mapFile) => {
 		let mapModel = null;
 		return Map.findByPk(mapID).then(map => {
