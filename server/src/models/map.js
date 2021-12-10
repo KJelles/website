@@ -556,7 +556,7 @@ module.exports = {
 		});
 	},
 
-	checkPermissions: (mapID, reqUser) => {
+	checkPermissions: (mapID, reqUser, allowMapper) => {
 		return new Promise((resolve, reject) => {
 			Map.findByPk(mapID, {
 				raw: true,
@@ -565,13 +565,15 @@ module.exports = {
 					if (mapObj.statusFlag === STATUS.APPROVED) {
 						if (reqUser.roles === user.Role.ADMIN)
 							resolve();
+						else if (allowMapper)
+							resolve("No delete");
 						else
 							reject(new ServerError(403, 'Forbidden'));
 					} else {
 						if (reqUser.roles === user.Role.ADMIN || reqUser.roles === user.Role.MODERATOR) {
 							resolve();
 						} else {
-							resolve("Verify");
+							resolve("Full");
 						}
 					}
 				} else {
